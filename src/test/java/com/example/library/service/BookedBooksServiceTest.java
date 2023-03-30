@@ -28,6 +28,19 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class BookedBooksServiceTest {
+
+    private BookedBooksService bookedBooksService;
+    private final MapToCopyOfBookDto mapToCopyOfBookDto = new MapToCopyOfBookDto();
+    private final MapToBookedBookDto mapToBookedBookDto = new MapToBookedBookDto(mapToCopyOfBookDto);
+    @Mock
+    private BookedBooksRepository bookedBooksRepository;
+    @Mock
+    private CopiesOfBookRepository copiesOfBookRepository;
+
+    @Mock
+    private ReaderRepository readerRepository;
+
+
     @BeforeEach
     void setUp() {
         bookedBooksService = new BookedBooksService(bookedBooksRepository, readerRepository, copiesOfBookRepository, mapToBookedBookDto);
@@ -159,17 +172,6 @@ class BookedBooksServiceTest {
         assertThat(result.get(0).getCopyOfABook().getCopyOfABookId()).isEqualTo(bookedBook.getCopyOfABook().getBookCopyId());
         assertThat(result.get(1).getCopyOfABook().getCopyOfABookId()).isEqualTo(bookedBook2.getCopyOfABook().getBookCopyId());
     }
-
-    private BookedBooksService bookedBooksService;
-    private final MapToCopyOfBookDto mapToCopyOfBookDto = new MapToCopyOfBookDto();
-    private final MapToBookedBookDto mapToBookedBookDto = new MapToBookedBookDto(mapToCopyOfBookDto);
-    @Mock
-    private BookedBooksRepository bookedBooksRepository;
-    @Mock
-    private CopiesOfBookRepository copiesOfBookRepository;
-
-    @Mock
-    private ReaderRepository readerRepository;
 
 
 }
