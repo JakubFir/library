@@ -36,4 +36,10 @@ public class Title {
     private List<CopyOfABook> copyOfABookList;
     private Date publishedAt = new Date();
 
+    public Title(String title, String author, Date publishedAt) {
+        this.title = title;
+        this.author = author;
+        this.publishedAt = publishedAt;
+    }
 }
+

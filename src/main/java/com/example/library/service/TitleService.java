@@ -2,6 +2,7 @@ package com.example.library.service;
 
 import com.example.library.domain.Title;
 import com.example.library.dto.TitleDto;
+import com.example.library.dtoMapper.MapTitleDtoToDomain;
 import com.example.library.dtoMapper.MapToTitleDto;
 import com.example.library.repository.TitleRepository;
 import lombok.AllArgsConstructor;
@@ -16,8 +17,10 @@ public class TitleService {
 
     private final TitleRepository titleRepository;
 
+    private final MapTitleDtoToDomain mapTitleDtoToDomain;
     private final MapToTitleDto mapToTitleDto;
-    public void addTitle(Title title) {
+    public void addTitle(TitleDto titleDto) {
+        Title title = mapTitleDtoToDomain.mapTitleDtoTODomain(titleDto);
         titleRepository.save(title);
     }
 

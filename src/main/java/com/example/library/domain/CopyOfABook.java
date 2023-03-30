@@ -27,4 +27,9 @@ public class CopyOfABook {
     private Title title;
     @Enumerated(EnumType.STRING)
     private BookState state;
+
+    public CopyOfABook(Title title, BookState state) {
+        this.title = title;
+        this.state = state;
+    }
 }

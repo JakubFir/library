@@ -1,9 +1,8 @@
 package com.example.library.controller;
 
 import com.example.library.domain.BookState;
-import com.example.library.domain.CopyOfABook;
 import com.example.library.dto.CopyOfABookDto;
-import com.example.library.service.CopiesOfBookService;
+import com.example.library.service.CopyOfBookService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,26 +13,26 @@ import java.util.List;
 @RequestMapping(path = "api/v1/copiesofbook")
 public class CopyOfBookController {
 
-    private final CopiesOfBookService copiesOfBookService;
+    private final CopyOfBookService copyOfBookService;
 
-    @PostMapping(path = "{id}")
-    public void addCopyOfABook(@RequestBody CopyOfABook copyOfABook, @PathVariable("id") Long titleId){
-        copiesOfBookService.addCopiesOfBook(copyOfABook,titleId);
+    @PostMapping
+    public void addCopyOfABook(@RequestBody CopyOfABookDto copyOfABookDto){
+        copyOfBookService.addCopiesOfBook(copyOfABookDto);
 
     }
     @PutMapping(path = "{id}")
-    public void changeStateOfBook(@RequestBody BookState bookState,@PathVariable("id") Long titleId){
-       copiesOfBookService.changeStateOfBook(bookState,titleId);
+    public void changeStateOfBook(@RequestBody BookState bookState,@PathVariable("id") Long copyOfBookId){
+       copyOfBookService.changeStateOfBook(bookState,copyOfBookId);
     }
 
     @GetMapping(path = "{id}")
-    public List<CopyOfABookDto> availableCopiesOfBook(@PathVariable("id") Long titleId){
-        return copiesOfBookService.getAvailableCopiesOfBook(titleId);
+    public List<CopyOfABookDto> getAllCopiesOfBook(@PathVariable("id") Long titleId){
+        return copyOfBookService.getAvailableCopiesOfBook(titleId);
     }
 
-    @GetMapping()
-    public List<CopyOfABookDto> availableCopiesOfBook(){
-        return copiesOfBookService.findAllCopies();
+    @GetMapping
+    public List<CopyOfABookDto> getAllCopiesOfBook(){
+        return copyOfBookService.findAllCopies();
     }
 
 }

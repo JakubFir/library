@@ -9,10 +9,12 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 @Service
 public class MapToBookedBookDto {
-    private final MapToCopiesOfBookDto mapToCopiesOfBookDto;
+    private final MapToCopyOfBookDto mapToCopyOfBookDto;
 
     public BookedBookDto mapToBookedBookDto(BookedBook bookedBook) {
-        CopyOfABookDto copyOfABookDto = mapToCopiesOfBookDto.mapToDto(bookedBook.getCopyOfABook());
+
+        CopyOfABookDto copyOfABookDto = mapToCopyOfBookDto.mapToDto(bookedBook.getCopyOfABook());
+
         return new BookedBookDto(
                 copyOfABookDto,
                 bookedBook.getReader(),

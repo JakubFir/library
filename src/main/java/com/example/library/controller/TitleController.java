@@ -3,7 +3,7 @@ package com.example.library.controller;
 
 import com.example.library.dto.TitleDto;
 import com.example.library.service.TitleService;
-import com.example.library.domain.Title;
+
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,8 +17,8 @@ public class TitleController {
     private final TitleService titleService;
 
     @PostMapping
-    public void addTitle(@RequestBody Title title) {
-        titleService.addTitle(title);
+    public void addTitle(@RequestBody TitleDto titleDto) {
+        titleService.addTitle(titleDto);
     }
 
     @GetMapping

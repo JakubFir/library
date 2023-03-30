@@ -24,10 +24,14 @@ public class Reader {
     @GeneratedValue(
             generator = "reader_sequence",
             strategy = GenerationType.SEQUENCE)
-    private Long ReaderId;
+    private Long readerId;
     private String name;
     private String lastName;
     private Date createAt = new Date();
 
-
+    public Reader(String name, String lastName, Date createAt) {
+        this.name = name;
+        this.lastName = lastName;
+        this.createAt = createAt;
+    }
 }

@@ -9,7 +9,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class CopyOfABookDto {
+
     private Long titleId;
+    private Long CopyOfABookId;
     private BookState state;
 
 }
