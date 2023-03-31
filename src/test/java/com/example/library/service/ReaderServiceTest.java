@@ -1,6 +1,6 @@
 package com.example.library.service;
 
-import com.example.library.domain.Reader;
+import com.example.library.domain.*;
 import com.example.library.dto.ReaderDto;
 import com.example.library.dtoMapper.MapReaderDtoToDomain;
 import com.example.library.dtoMapper.MapToReaderDto;
@@ -30,27 +30,32 @@ class ReaderServiceTest {
     private ReaderRepository readerRepository;
     private final MapReaderDtoToDomain mapReaderDtoToDomain = new MapReaderDtoToDomain();
     private final MapToReaderDto mapToReaderDto = new MapToReaderDto();
+    private Reader reader;
 
-
+    private List<Reader> readerList;
+    private Long id;
 
     @BeforeEach
     void setUp() {
         readerService = new ReaderService(readerRepository,mapReaderDtoToDomain,mapToReaderDto);
+        id = 1L;
+        reader = new Reader(id, "Jakub", "jakub", new Date());
+        readerList= new ArrayList<>();
+
     }
 
     @Test
     void addReader() {
-        Long id =1L;
-        Reader reader = new Reader(id, "Jakub", "jakub", new Date());
+        //given
         ReaderDto readerDto = mapToReaderDto.mapToReaderDto(reader);
+
         //when
         readerService.addReader(readerDto);
+
         //then
         ArgumentCaptor<Reader> readerArgumentCaptor = ArgumentCaptor.forClass(Reader.class);
         verify(readerRepository).save(readerArgumentCaptor.capture());
-
         Reader reader1 = readerArgumentCaptor.getValue();
-
         assertThat(reader1.getName()).isEqualTo(reader.getName());
         assertThat(reader1.getLastName()).isEqualTo(reader.getLastName());
 
@@ -58,25 +63,26 @@ class ReaderServiceTest {
 
     @Test
     void getALlReaders() {
-        Long id =1L;
-        Reader reader = new Reader(id, "Jakub", "jakub", new Date());
-        List<Reader> list = new ArrayList<>();
-        list.add(reader);
-        when(readerRepository.findAll()).thenReturn(list);
+        //given
+        readerList.add(reader);
+        when(readerRepository.findAll()).thenReturn(readerList);
+
         //when
         List<ReaderDto> result = readerService.getALlReaders();
+
         //then
         assertEquals(1,result.size());
     }
 
     @Test
     void getReader() {
-        Long id =1L;
-        Reader reader = new Reader(id, "Jakub", "jakub", new Date());
+        //given
         when(readerRepository.findById(id)).thenReturn(Optional.of(reader));
+
         //when
         ReaderDto result = readerService.getReader(id);
-        //
+
+        //then
         assertThat(result.getName()).isEqualTo(reader.getName());
         assertThat(result.getLastName()).isEqualTo(reader.getLastName());
     }

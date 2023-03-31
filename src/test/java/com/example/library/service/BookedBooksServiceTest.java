@@ -39,30 +39,38 @@ class BookedBooksServiceTest {
 
     @Mock
     private ReaderRepository readerRepository;
+    private Title title;
+    private BookedBook bookedBook;
+    private CopyOfABook copyOfABook;
 
+    private Reader reader;
+
+    private  List<BookedBook> bookedBooks;
+    private Long id;
 
     @BeforeEach
     void setUp() {
         bookedBooksService = new BookedBooksService(bookedBooksRepository, readerRepository, copiesOfBookRepository, mapToBookedBookDto);
+        id = 1L;
+        reader = new Reader(id, "Jakub", "jakub", new Date());
+        title = new Title(id, "asd", "asd", null, new Date());
+        copyOfABook = new CopyOfABook(2L, title, BookState.AVAILABLE);
+        bookedBook = new BookedBook(id, copyOfABook, reader, new Date(), new Date());
+        bookedBooks = new ArrayList<>();
     }
 
 
     @Test
     void findAllBookedBooks() {
         //given
-        Long id = 1L;
-        Reader reader = new Reader(id, "Jakub", "jakub", new Date());
-        Title title = new Title(id, "asd", "asd", null, new Date());
-        CopyOfABook copyOfABook = new CopyOfABook(2L, title, BookState.AVAILABLE);
-        BookedBook bookedBook = new BookedBook(id, copyOfABook, reader, new Date(), new Date());
-        List<BookedBook> bookedBooks = new ArrayList<>();
         bookedBooks.add(bookedBook);
         when(bookedBooksRepository.findAll()).thenReturn(bookedBooks);
+
         //when
         List<BookedBookDto> result = bookedBooksService.findAllBookedBooks();
-        //then
-        assertEquals(1,result.size());
 
+        //then
+        assertEquals(1, result.size());
 
     }
 
@@ -70,23 +78,15 @@ class BookedBooksServiceTest {
     @Test
     void borrowBook() {
         //given
-        Long id = 1L;
-        Reader reader = new Reader(id, "Jakub", "jakub", new Date());
-        when(readerRepository.findById(id)).thenReturn(Optional.of(reader));
-        Title title = new Title(id, "asd", "asd", null, new Date());
-        CopyOfABook copyOfABook = new CopyOfABook(2L, title, BookState.AVAILABLE);
         List<CopyOfABook> copyOfABookList = new ArrayList<>();
         copyOfABookList.add(copyOfABook);
-
         when(copiesOfBookRepository.findAll()).thenReturn(copyOfABookList);
-
+        when(readerRepository.findById(id)).thenReturn(Optional.ofNullable(reader));
 
         //when
         bookedBooksService.borrowBook(id, id);
-
         ArgumentCaptor<BookedBook> bookedBookArgumentCaptor = ArgumentCaptor.forClass(BookedBook.class);
         verify(bookedBooksRepository).save(bookedBookArgumentCaptor.capture());
-
         BookedBook capturedBookedBook = bookedBookArgumentCaptor.getValue();
 
         //then
@@ -98,12 +98,6 @@ class BookedBooksServiceTest {
     @Test
     void returnBook() {
         //given
-        Long id = 1L;
-        Reader reader = new Reader(id, "Jakub", "jakub", new Date());
-        Title title = new Title(id, "asd", "asd", null, new Date());
-        CopyOfABook copyOfABook = new CopyOfABook(2L, title, BookState.RENTED);
-        BookedBook bookedBook = new BookedBook(id, copyOfABook, reader, new Date(), new Date());
-
         when(bookedBooksRepository.findById(bookedBook.getBookedBookId())).thenReturn(Optional.of(bookedBook));
         when(copiesOfBookRepository.findById(copyOfABook.getBookCopyId())).thenReturn(Optional.of(copyOfABook));
 
@@ -118,22 +112,14 @@ class BookedBooksServiceTest {
     @Test
     void borrowThisBook() {
         //given
-        Long id = 1L;
-        Reader reader = new Reader(id, "Jakub", "jakub", new Date());
-        Title title = new Title(id, "asd", "asd", null, new Date());
-        CopyOfABook copyOfABook = new CopyOfABook(2L, title, BookState.AVAILABLE);
-
         CopyOfABookDto copyOfABookDto = mapToCopyOfBookDto.mapToDto(copyOfABook);
-
         when(copiesOfBookRepository.findById(copyOfABook.getBookCopyId())).thenReturn(Optional.of(copyOfABook));
         when(readerRepository.findById(id)).thenReturn(Optional.of(reader));
 
         //when
         bookedBooksService.borrowThisBook(copyOfABookDto, id);
-
         ArgumentCaptor<BookedBook> bookedBookArgumentCaptor = ArgumentCaptor.forClass(BookedBook.class);
         verify(bookedBooksRepository).save(bookedBookArgumentCaptor.capture());
-
         BookedBook capturedBookedBook = bookedBookArgumentCaptor.getValue();
 
         //then
@@ -145,22 +131,12 @@ class BookedBooksServiceTest {
     @Test
     void getReaderBookedBooks() {
         //given
-        Long id = 1L;
-        Reader reader = new Reader(id, "Jakub", "jakub", new Date());
-        Title title = new Title(id, "asd", "asd", null, new Date());
-        CopyOfABook copyOfABook = new CopyOfABook(1L, title, BookState.AVAILABLE);
-
         CopyOfABook copyOfABook2 = new CopyOfABook(2L, title, BookState.AVAILABLE);
-
-        BookedBook bookedBook = new BookedBook(id, copyOfABook, reader, new Date(), new Date());
         BookedBook bookedBook2 = new BookedBook(2L, copyOfABook2, reader, new Date(), new Date());
-
         List<BookedBook> bookedBooks = new ArrayList<>();
         bookedBooks.add(bookedBook);
         bookedBooks.add(bookedBook2);
-
         when(bookedBooksRepository.findAll()).thenReturn(bookedBooks);
-
 
         //when
         List<BookedBookDto> result = bookedBooksService.getReaderBookedBooks(id);
@@ -168,7 +144,6 @@ class BookedBooksServiceTest {
         //then
         assertThat(result.get(0).getReader()).isEqualTo(bookedBook.getReader());
         assertThat(result.get(1).getReader()).isEqualTo(bookedBook.getReader());
-
         assertThat(result.get(0).getCopyOfABook().getCopyOfABookId()).isEqualTo(bookedBook.getCopyOfABook().getBookCopyId());
         assertThat(result.get(1).getCopyOfABook().getCopyOfABookId()).isEqualTo(bookedBook2.getCopyOfABook().getBookCopyId());
     }
